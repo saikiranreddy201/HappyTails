@@ -1,0 +1,15 @@
+/node_modules
+
+# Ignore environment files
+.env
+
+# Logs
+*.log
+
+# Build output
+dist/
+build/
+
+# OS or editor-specific files
+.DS_Store
+.vscode/*
