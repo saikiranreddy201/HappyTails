@@ -10,10 +10,6 @@ const userSchema = new mongoose.Schema({
     gender: { type: String, default: 'Not Selected' },
     dob: { type: String, default: 'Not Selected' },
     password: { type: String, required: true },
-
-    // OTP fields
-    otp: { type: String },                // store OTP as string
-    otpExpiresAt: { type: Date },         // expiry timestamp
 })
 
 

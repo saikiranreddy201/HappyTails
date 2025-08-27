@@ -12,6 +12,7 @@ const AppContextProvider = (props) => {
     const [doctors, setDoctors] = useState([])
     const [token, setToken] = useState(localStorage.getItem('token') ? localStorage.getItem('token') : '')
     const [userData, setUserData] = useState(false)
+    const [pets, setPets] = useState([])
 
     // Getting Doctors using API
     const getDoctosData = async () => {
@@ -52,6 +53,112 @@ const AppContextProvider = (props) => {
 
     }
 
+    // Getting User's Pets using API
+    const loadUserPets = async () => {
+        try {
+            const { data } = await axios.get(backendUrl + '/api/pet', { headers: { token } })
+            
+            if (data.success) {
+                setPets(data.pets)
+            } else {
+                toast.error(data.message)
+            }
+        } catch (error) {
+            console.log(error)
+            toast.error(error.message)
+        }
+    }
+
+    // Add Pet
+    const addPet = async (petData) => {
+        try {
+            const formData = new FormData()
+            formData.append('name', petData.name)
+            formData.append('breed', petData.breed)
+            formData.append('age', petData.age)
+            formData.append('weight', petData.weight)
+            formData.append('gender', petData.gender)
+            
+            if (petData.image) {
+                formData.append('image', petData.image)
+            }
+
+            const { data } = await axios.post(backendUrl + '/api/pet', formData, { 
+                headers: { 
+                    token
+                } 
+            })
+            
+            if (data.success) {
+                toast.success(data.message)
+                loadUserPets() // Reload pets
+                return true
+            } else {
+                toast.error(data.message)
+                return false
+            }
+        } catch (error) {
+            console.log(error)
+            toast.error(error.message)
+            return false
+        }
+    }
+
+    // Update Pet
+    const updatePet = async (petId, petData) => {
+        try {
+            const formData = new FormData()
+            formData.append('name', petData.name)
+            formData.append('breed', petData.breed)
+            formData.append('age', petData.age)
+            formData.append('weight', petData.weight)
+            formData.append('gender', petData.gender)
+            
+            if (petData.image) {
+                formData.append('image', petData.image)
+            }
+
+            const { data } = await axios.put(backendUrl + `/api/pet/${petId}`, formData, { 
+                headers: { 
+                    token
+                } 
+            })
+            
+            if (data.success) {
+                toast.success(data.message)
+                loadUserPets() // Reload pets
+                return true
+            } else {
+                toast.error(data.message)
+                return false
+            }
+        } catch (error) {
+            console.log(error)
+            toast.error(error.message)
+            return false
+        }
+    }
+
+    // Delete Pet
+    const deletePet = async (petId) => {
+        try {
+            const { data } = await axios.delete(backendUrl + `/api/pet/${petId}`, { headers: { token } })
+            
+            if (data.success) {
+                toast.success(data.message)
+                loadUserPets() // Reload pets
+                return true
+            } else {
+                toast.error(data.message)
+                return false
+            }
+        } catch (error) {
+            console.log(error)
+            toast.error(error.message)
+            return false
+        }
+    }
+
     useEffect(() => {
         getDoctosData()
     }, [])
@@ -59,6 +166,7 @@ const AppContextProvider = (props) => {
     useEffect(() => {
         if (token) {
             loadUserProfileData()
+            loadUserPets()
         }
     }, [token])
 
@@ -67,7 +175,8 @@ const AppContextProvider = (props) => {
         currencySymbol,
         backendUrl,
         token, setToken,
-        userData, setUserData, loadUserProfileData
+        userData, setUserData, loadUserProfileData,
+        pets, setPets, loadUserPets, addPet, updatePet, deletePet
     }
 
     return (

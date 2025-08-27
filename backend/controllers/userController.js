@@ -7,7 +7,7 @@ import appointmentModel from "../models/appointmentModel.js";
 import { v2 as cloudinary } from 'cloudinary'
 import stripe from "stripe";
 import razorpay from 'razorpay';
-import OtpModel from '../models/Otp.js'
+import OtpModel from '../models/otpModel.js'
 import otpGenerator from 'otp-generator'
 import sendEmail from '../utils/sendEmail.js'
 import sendSMS from '../utils/sendSMS.js'
@@ -499,13 +499,33 @@ const updateProfile = async (req, res) => {
     try {
 
         const { userId, name, phone, address, dob, gender } = req.body
+        console.log("=== UPDATE PROFILE DEBUG ===")
+        console.log("req.body:", req.body)
+        console.log("userId from body:", userId)
+        console.log("name:", name)
+        console.log("phone:", phone)
+        console.log("address:", address)
+        
         const imageFile = req.file
 
-        if (!name || !phone || !dob || !gender) {
-            return res.json({ success: false, message: "Data Missing" })
+        if (!userId) {
+            return res.json({ success: false, message: "User ID missing - authentication issue" })
         }
 
-        await userModel.findByIdAndUpdate(userId, { name, phone, address: JSON.parse(address), dob, gender })
+        if (!name) {
+            return res.json({ success: false, message: "Name is required" })
+        }
+
+        const updateData = { 
+            name, 
+            phone: phone || '', 
+            address: address ? JSON.parse(address) : {}
+        }
+        
+        if (dob) updateData.dob = dob
+        if (gender) updateData.gender = gender
+
+        await userModel.findByIdAndUpdate(userId, updateData)
 
         if (imageFile) {
 

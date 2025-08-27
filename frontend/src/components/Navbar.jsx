@@ -3,6 +3,12 @@ import { assets } from '../assets/assets'
 import { NavLink, useNavigate } from 'react-router-dom'
 import { AppContext } from '../context/AppContext'
 
+// Icons
+const UserIcon = () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>
+const CalendarIcon = () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+const LogoutIcon = () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+const ChevronDownIcon = () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
+
 const Navbar = () => {
 
   const navigate = useNavigate()
@@ -47,13 +53,57 @@ const Navbar = () => {
         {
           token && userData
             ? <div className='flex items-center gap-2 cursor-pointer group relative'>
-              <img className='w-8 rounded-full' src={userData.image} alt="" />
-              <img className='w-2.5' src={assets.dropdown_icon} alt="" />
-              <div className='absolute top-0 right-0 pt-14 text-base font-medium text-gray-600 z-20 hidden group-hover:block'>
-                <div className='min-w-48 bg-gray-50 rounded flex flex-col gap-4 p-4'>
-                  <p onClick={() => navigate('/my-profile')} className='hover:text-black cursor-pointer'>My Profile</p>
-                  <p onClick={() => navigate('/my-appointments')} className='hover:text-black cursor-pointer'>My Appointments</p>
-                  <p onClick={logout} className='hover:text-black cursor-pointer'>Logout</p>
+              <div className='flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors'>
+                <img className='w-9 h-9 rounded-full object-cover border-2 border-blue-100' src={userData.image} alt={userData.name} />
+                <div className='hidden md:block'>
+                  <p className='text-sm font-medium text-gray-800 truncate max-w-24'>{userData.name}</p>
+                  <p className='text-xs text-gray-500'>Pet Parent</p>
+                </div>
+                <ChevronDownIcon className="text-gray-400 group-hover:text-gray-600 transition-colors" />
+              </div>
+              
+              <div className='absolute top-0 right-0 pt-16 z-20 hidden group-hover:block'>
+                <div className='bg-white rounded-xl shadow-lg border border-gray-200 py-2 min-w-48 overflow-hidden'>
+                  {/* User Info Header */}
+                  <div className='px-4 py-3 border-b border-gray-100'>
+                    <div className='flex items-center gap-3'>
+                      <img className='w-10 h-10 rounded-full object-cover border-2 border-blue-100' src={userData.image} alt={userData.name} />
+                      <div className='min-w-0'>
+                        <p className='text-sm font-semibold text-gray-800 truncate'>{userData.name}</p>
+                        <p className='text-xs text-gray-500 truncate'>{userData.email}</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Menu Items */}
+                  <div className='py-1'>
+                    <button 
+                      onClick={() => navigate('/my-profile')} 
+                      className='w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors'
+                    >
+                      <UserIcon className="text-gray-400" />
+                      <span className='font-medium'>My Profile</span>
+                    </button>
+                    
+                    <button 
+                      onClick={() => navigate('/my-appointments')} 
+                      className='w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors'
+                    >
+                      <CalendarIcon className="text-gray-400" />
+                      <span className='font-medium'>My Appointments</span>
+                    </button>
+                  </div>
+                  
+                  {/* Logout Section */}
+                  <div className='border-t border-gray-100 py-1'>
+                    <button 
+                      onClick={logout} 
+                      className='w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors'
+                    >
+                      <LogoutIcon className="text-red-500" />
+                      <span className='font-medium'>Sign Out</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>

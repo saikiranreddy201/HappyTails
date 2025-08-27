@@ -2,10 +2,10 @@ import React, { useState, useContext, useEffect } from 'react'
 import { AppContext } from '../context/AppContext'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 const Login = () => {
-  const [step, setStep] = useState(1) // 1 = login, 2 = sign up, 3 = OTP verification, 4 = forgot password
+  const [step, setStep] = useState(2) // 1 = login, 2 = sign up, 3 = OTP verification, 4 = forgot password
   const [name, setName] = useState('')
   const [identifier, setIdentifier] = useState('')
   const [password, setPassword] = useState('')
@@ -26,13 +26,17 @@ const Login = () => {
 
   const { backendUrl, setToken, token } = useContext(AppContext)
   const navigate = useNavigate()
+  const location = useLocation()
+
+  // Get the page user was trying to access
+  const from = location.state?.from?.pathname || '/'
 
   // Redirect if already logged in
   useEffect(() => {
     if (token) {
-      navigate('/')
+      navigate(from, { replace: true })
     }
-  }, [token, navigate])
+  }, [token, navigate, from])
 
   // OTP Timer
   useEffect(() => {
@@ -159,7 +163,7 @@ const Login = () => {
         localStorage.setItem('token', data.token)
         setToken(data.token)
         toast.success('Login successful!')
-        navigate('/')
+        navigate(from, { replace: true })
       } else {
         toast.error(data.message || 'Login failed')
       }
@@ -231,7 +235,7 @@ const Login = () => {
         toast.success('Account created successfully!')
         localStorage.setItem('token', data.token)
         setToken(data.token)
-        navigate('/')
+        navigate(from, { replace: true })
       } else {
         toast.error(data.message || 'OTP verification failed')
       }

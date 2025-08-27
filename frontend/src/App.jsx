@@ -14,6 +14,8 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Verify from './pages/Verify'
 import Gallery from './pages/Gallery'
+import ProtectedRoute from './components/ProtectedRoute'
+import NotFound from './pages/NotFound'
 
 const App = () => {
   return (
@@ -21,6 +23,7 @@ const App = () => {
       <ToastContainer />
       <Navbar />
       <Routes>
+        {/* Public Routes */}
         <Route path='/' element={<Home />} />
         <Route path='/doctors' element={<Doctors />} />
         <Route path='/gallery' element={<Gallery />} />
@@ -28,10 +31,31 @@ const App = () => {
         <Route path='/login' element={<Login />} />
         <Route path='/about' element={<About />} />
         <Route path='/contact' element={<Contact />} />
-        <Route path='/appointment/:docId' element={<Appointment />} />
-        <Route path='/my-appointments' element={<MyAppointments />} />
-        <Route path='/my-profile' element={<MyProfile />} />
-        <Route path='/verify' element={<Verify />} />
+        
+        {/* Protected Routes */}
+        <Route path='/appointment/:docId' element={
+          <ProtectedRoute>
+            <Appointment />
+          </ProtectedRoute>
+        } />
+        <Route path='/my-appointments' element={
+          <ProtectedRoute>
+            <MyAppointments />
+          </ProtectedRoute>
+        } />
+        <Route path='/my-profile' element={
+          <ProtectedRoute>
+            <MyProfile />
+          </ProtectedRoute>
+        } />
+        <Route path='/verify' element={
+          <ProtectedRoute>
+            <Verify />
+          </ProtectedRoute>
+        } />
+        
+        {/* 404 Route */}
+        <Route path='*' element={<NotFound />} />
       </Routes>
       <Footer />
     </div>
